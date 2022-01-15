@@ -1,7 +1,8 @@
 data/
 cache/
 .vscode/
-__pychche__/
+__pycache__/
 eval_mat.py
 test_extract_and_eval.py
 */**/__pycache__/
+
