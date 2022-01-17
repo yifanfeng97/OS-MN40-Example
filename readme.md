@@ -2,6 +2,7 @@
 This is an example code for [track](https://shrec22.moon-lab.tech/) "Open-Set 3D Object Retrieval using Multi-Modal Representation" in [SHREC22](https://www.shrec.net/). The complete dataset OS-MN40 is adopted for input. Dataset can be download as follows:
 - [OS-MN40](https://data.shrec22.moon-lab.tech:18443/OS-MN40.tar.gz)
 - [OS-MN40-Miss](https://data.shrec22.moon-lab.tech:18443/OS-MN40-Miss.tar.gz)
+
 More details about the dataset and the track can be found in [here](https://shrec22.moon-lab.tech/).
 
 ## Models
@@ -16,6 +17,7 @@ We implement the baseline via combining multi-modal backbone, as follows:
 This example code is developed in Python 3.8.12 and pytorch1.8.1+cu102. You can install the required packages as follows.
 ``` bash 
 pip install -r requirements.txt
+conda install pytorch==1.8.1 torchvision==0.9.1 torchaudio==0.8.1 -c pytorch
 ```
 
 ## Configure Path
