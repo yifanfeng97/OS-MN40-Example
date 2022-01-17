@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 
 class FeatureNet(nn.Module):
-    def __init__(self, pretrained=True):
+    def __init__(self, pretrained=False):
         super(FeatureNet, self).__init__()
         self.base_model = torchvision.models.resnet18(pretrained=pretrained)
         self.feature_len = 512
@@ -20,7 +20,7 @@ class FeatureNet(nn.Module):
         return x
 
 class MVCNN(nn.Module):
-    def __init__(self, n_class, n_view, pretrained=True):
+    def __init__(self, n_class, n_view, pretrained=False):
         super(MVCNN, self).__init__()
         self.n_view = n_view
         self.ft_net = FeatureNet(pretrained=pretrained)

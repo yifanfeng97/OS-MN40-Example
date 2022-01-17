@@ -11,17 +11,17 @@ from torch.utils.data import DataLoader
 
 from models import UniModel
 from loaders import OSMN40_retrive
-os.environ["CUDA_VISIBLE_DEVICES"] = '0,1'
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 ######### must config this #########
 data_root = Path('data/OS-MN40')
-ckpt_path = 'cache/ckpts/OS-MN40_2022-01-12-20-57-46/ckpt.pth'
+ckpt_path = 'cache/ckpts/OS-MN40_2022-01-15-13-58-50/ckpt.pth'
 ####################################
 
 # configure
 dist_mat_path = Path(ckpt_path).parent / "cdist.txt"
 dist_metric='cosine'
-batch_size = 64
+batch_size = 48
 n_worker = 16
 n_class = 8
 
@@ -35,28 +35,40 @@ def extract(query_loader, target_loader, net):
 
     st = time.time()
     for img, mesh, pt, vox in query_loader:
+        img = img.cuda()
+        mesh = [d.cuda() for d in mesh]
         pt = pt.cuda()
         vox = vox.cuda()
-        data = (None, None, pt, vox)
+        data = (img, mesh, pt, vox)
         _, ft = net(data, global_ft=True)
         ft_img, ft_mesh, ft_pt, ft_vox = ft
+        q_fts_img.append(ft_img.detach().cpu().numpy())
+        q_fts_mesh.append(ft_mesh.detach().cpu().numpy())
         q_fts_pt.append(ft_pt.detach().cpu().numpy())
         q_fts_vox.append(ft_vox.detach().cpu().numpy())
+    q_fts_img = np.concatenate(q_fts_img, axis=0)
+    q_fts_mesh = np.concatenate(q_fts_mesh, axis=0)
     q_fts_pt = np.concatenate(q_fts_pt, axis=0)
     q_fts_vox = np.concatenate(q_fts_vox, axis=0)
-    q_fts_uni = np.concatenate((q_fts_pt, q_fts_vox), axis=1)
+    q_fts_uni = np.concatenate((q_fts_img, q_fts_mesh, q_fts_pt, q_fts_vox), axis=1)
 
     for img, mesh, pt, vox in target_loader:
+        img = img.cuda()
+        mesh = [d.cuda() for d in mesh]
         pt = pt.cuda()
         vox = vox.cuda()
-        data = (None, None, pt, vox)
+        data = (img, mesh, pt, vox)
         _, ft = net(data, global_ft=True)
         ft_img, ft_mesh, ft_pt, ft_vox = ft
+        t_fts_img.append(ft_img.detach().cpu().numpy())
+        t_fts_mesh.append(ft_mesh.detach().cpu().numpy())
         t_fts_pt.append(ft_pt.detach().cpu().numpy())
         t_fts_vox.append(ft_vox.detach().cpu().numpy())
+    t_fts_img = np.concatenate(t_fts_img, axis=0)
+    t_fts_mesh = np.concatenate(t_fts_mesh, axis=0)
     t_fts_pt = np.concatenate(t_fts_pt, axis=0)
     t_fts_vox = np.concatenate(t_fts_vox, axis=0)
-    t_fts_uni = np.concatenate((t_fts_pt, t_fts_vox), axis=1)
+    t_fts_uni = np.concatenate((t_fts_img, t_fts_mesh, t_fts_pt, t_fts_vox), axis=1)
 
     print(f"Time Cost: {time.time()-st:.4f}")
 

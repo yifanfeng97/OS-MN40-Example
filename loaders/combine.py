@@ -40,15 +40,15 @@ class OSMN40_retrive(Dataset):
     def __getitem__(self, index):
         p = Path(self.object_list[index])
         # # image
-        # img = load_pt(p/'image')
+        img = load_img(p/'image')
         # # mesh
-        # mesh = load_pt(p/'mesh')
+        mesh = load_mesh(p/'mesh')
         # point cloud
         pt = load_pt(p/'pointcloud')
         # voxel
         vox = load_vox(p/'voxel')
 
-        return 0, 0, pt, vox
+        return img, mesh, pt, vox
 
     def __len__(self):
         return len(self.object_list)

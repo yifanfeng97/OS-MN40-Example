@@ -95,6 +95,68 @@ def map_score(dist_mat, lbl_a, lbl_b, metric='cosine'):
     return np.mean(res)
 
 
+def map_score(dist_mat, lbl_a, lbl_b):
+    n_a, n_b = dist_mat.shape
+    s_idx = dist_mat.argsort()
+    res = []
+    for i in range(n_a):
+        order = s_idx[i]
+        p = 0.0
+        r = 0.0
+        for j in range(n_b):
+            if lbl_a[i] == lbl_b[order[j]]:
+                r += 1
+                p += (r / (j + 1))
+        if r > 0:
+            res.append(p/r)
+        else:
+            res.append(0)
+    return np.mean(res)
+
+
+def nn_score(dist_mat, lbl_a, lbl_b):
+    n_a, n_b = dist_mat.shape
+    s_idx = dist_mat.argsort()
+    res = []
+    for i in range(n_a):
+        order = s_idx[i]
+        if lbl_a[i] == lbl_b[order[0]]:
+            res.append(1)
+        else:
+            res.append(0)
+    return np.mean(res)
+
+
+def ndcg_score(dist_mat, lbl_a, lbl_b, k=100):
+    n_a, n_b = dist_mat.shape
+    s_idx = dist_mat.argsort()
+    res = []
+    for i in range(n_a):
+        order = s_idx[i]
+        idcg = np.cumsum(1.0 / np.log2(np.arange(2, n_b + 2)))
+        dcg = np.cumsum([1.0/np.log2(idx+2) if lbl_a[i] == lbl_b[item] else 0.0 for idx, item in enumerate(order)])
+        ndcg = (dcg/idcg)[k-1]
+        res.append(ndcg)
+    return np.mean(res)
+
+
+def anmrr_score(dist_mat, lbl_a, lbl_b):
+    # NG: number of ground truth images (target images) per query (vector)
+    n_a, n_b = dist_mat.shape
+    lbl_a, lbl_b = np.array(lbl_a), np.array(lbl_b)
+    NG = np.array([(lbl_a[i]==lbl_b).sum() for i in range(lbl_a.shape[0])])
+    s_idx = dist_mat.argsort()
+    res = []
+    for i in range(n_a):
+        cur_NG = NG[i]
+        K = min(4*cur_NG, 2*NG.max())
+        order = s_idx[i]
+        ARR = np.sum([(idx+1)/cur_NG if lbl_a[i] == lbl_b[order[idx]] else (K+1)/cur_NG for idx in range(cur_NG)])
+        MRR = ARR - 0.5*cur_NG - 0.5
+        NMRR = MRR / (K - 0.5*cur_NG + 0.5)
+        res.append(NMRR)
+    return np.mean(res)
+
 
 if __name__ == "__main__":
     split_trainval('data/OS-MN40')

@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 from models import UniModel
 from loaders import OSMN40_train
 from utils import split_trainval, AverageMeter, res2tab, acc_score, map_score
-os.environ["CUDA_VISIBLE_DEVICES"] = '6,7'
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 ######### must config this #########
 data_root = 'data/OS-MN40'
@@ -23,7 +23,7 @@ data_root = 'data/OS-MN40'
 n_class = 8
 n_worker = 16
 max_epoch = 150
-batch_size = 64
+batch_size = 48
 this_task = f"OS-MN40_{time.strftime('%Y-%m-%d-%H-%M-%S')}"
 
 # log and checkpoint
