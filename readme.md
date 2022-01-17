@@ -54,5 +54,5 @@ python get_mat.py
 The generated cdist.txt can be found in the same folder of the specified checkpoints. 
 
 ## Online Evaluation
-You can submit the cdist.txt file with your personal key on the track[website](https://shrec22.moon-lab.tech/). The submission with invalid personal will not appear on the leaderboard. The online evaluation will use mAP, NN, NDCG@100, and ANMRR. The computation details of those scores can be found in "utils.py". The defination of those scores refer to the book [View-Based 3-d Object Retrieval](https://www.sciencedirect.com/topics/computer-science/criterion-measure).
+You can submit the cdist.txt file with your personal key on the track [website](https://shrec22.moon-lab.tech/). The submission with invalid personal will not appear on the leaderboard. The online evaluation will use mAP, NN, NDCG@100, and ANMRR. The computation details of those scores can be found in "utils.py". The defination of those scores refer to the book [View-Based 3-d Object Retrieval](https://www.sciencedirect.com/topics/computer-science/criterion-measure).
 
